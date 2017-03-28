@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-g++ $(pkg-config --libs --cflags opencv) *.cpp -o FunMirror
+g++ -O2 -march=native $(pkg-config --libs --cflags opencv) *.cpp -o FunMirror
