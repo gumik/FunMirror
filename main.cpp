@@ -24,13 +24,7 @@ Point adjustPoint(const Point& point, size_t width, size_t height) {
 
 typedef vector< pair< Point, Point > > Points;
 
-class ITransformation {
-public:
-    virtual void Transform(const Mat& input, Mat& output) = 0;
-};
-
-
-class MirrorTransformation : public ITransformation {
+class MirrorTransformation {
 public:
     MirrorTransformation(size_t width, size_t height) : width(width), height(height) {
         points = {
@@ -46,7 +40,7 @@ public:
         };
     }
 
-    void Transform(const Mat& input, Mat& output) override {
+    void Transform(const Mat& input, Mat& output) {
         tps->warpImage(input, output);
     }
 
@@ -121,7 +115,18 @@ public:
     }
 };
 
-
+class FunMirror4Transform : public MirrorTransformation {
+public:
+    FunMirror4Transform(size_t width, size_t height) : MirrorTransformation(width, height) {
+        points.insert(points.end(), {
+            (make_pair(Point(20, 20), Point(30, 30))),
+            (make_pair(Point(80, 80), Point(70, 70))),
+            (make_pair(Point(20, 80), Point(10, 90))),
+            (make_pair(Point(80, 20), Point(90, 10))),
+        });
+        Init();
+    }
+};
 
 int main() {
 
@@ -138,12 +143,13 @@ int main() {
     const size_t height = videoSize.height;
     cout << width << ", " << height << endl;
 
-    vector<ITransformation*> transformations = {
+    vector<MirrorTransformation*> transformations = {
         new FunMirror1Transform(width, height),
         new FunMirror2Transform(width, height),
         new FunMirror3Transform(width, height),
+        new FunMirror4Transform(width, height),
     };
-    vector<ITransformation*>::iterator transformIt = transformations.begin();
+    vector<MirrorTransformation*>::iterator transformIt = transformations.begin();
 
     FunMirror3Transform tr(width, height);
 
