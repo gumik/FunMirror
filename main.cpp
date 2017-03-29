@@ -9,6 +9,7 @@
 #include <iostream>
 #include <map>
 #include <boost/assign/list_of.hpp>
+#include <string>
 
 using namespace cv;
 using namespace cv::dpm;
@@ -153,6 +154,8 @@ int main() {
 
     FunMirror3Transform tr(width, height);
 
+    int i = 0;
+    int j = 0;
     while(capture.read(frame)) {
 
         Mat dstImage;
@@ -164,6 +167,13 @@ int main() {
             if (++transformIt == transformations.end()) {
                 transformIt = transformations.begin();
             }
+        }
+
+        if (i++ % 50 == 0) {
+            stringstream name;
+            name << "img" << j << ".jpg";
+            imwrite(name.str().c_str(), dstImage);
+            ++j;
         }
     }
 
